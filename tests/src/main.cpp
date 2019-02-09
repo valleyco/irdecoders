@@ -7,35 +7,58 @@
 #include <stdio.h>
 #include "IrNecDecoder.h"
 #include "NecDecoder.h"
+#include "TadDecoder.h"
 
 int main() {
-
+#if 0
 	uint8_t data[] = { 16, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 1, 1, 3, 1, 1,
 			1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 3, 1, 1, 1, 3, 1, 3, 1, 3, 1, 1, 1,
 			3, 1 };
-	int timing[] = { 9380, 4660, 560, 620, 580, 600, 580, 600, 560, 580, 600,
+#endif
+	int nec_t[] = { 9380, 4660, 560, 620, 580, 600, 580, 600, 560, 580, 600,
 			580, 580, 600, 580, 580, 580, 600, 580, 1740, 560, 1740, 580, 1740,
 			580, 1740, 560, 1720, 600, 1740, 580, 1740, 560, 1760, 540, 1760,
 			580, 580, 580, 1740, 580, 600, 560, 600, 540, 620, 580, 1720, 600,
 			600, 580, 580, 580, 1720, 600, 580, 560, 1740, 600, 1740, 560, 1740,
 			580, 600, 580, 1740, 560 };
-	IrNecDecoder ir;
+	int tad_t[] = { 64988, 8160, 4420, 1760, 700, 600, 1820, 600, 1820, 580, 1860,
+			600, 1820, 600, 1820, 640, 1800, 600, 1840, 1780, 640, 620, 1820,
+			1780, 640, 580, 1860, 600, 1840, 600, 1840, 1800, 620, 580, 1860,
+			600, 1800, 1800, 660, 1780, 620, 1800, 680, 600, 1800, 1780, 680,
+			600, 1820, 600, 1800, 600, 1860, 600, 1820, 600, 1860, 580, 1820,
+			600, 1860, 600, 1820, 600, 1820, 580, 1880, 560, 1840, 640, 1800,
+			660, 1760, 600, 1860, 560, 1860, 600, 1800, 600, 1860, 600, 1840,
+			580, 1840, 620, 1800, 600, 1860, 560, 1860, 1800, 620, 1800, 620,
+			600, 1820, 620, 1860, 600, 1800, 600, 1860, 580, 1840, 580, 1860,
+			560, 1860, 580, 1820, 660, 1800, 600, 1820, 1780, 680, 580, 1840,
+			1800, 600, 1840, 600, 1800, 640, 660, 1780, 600, 1820, 600, 1860,
+			1680 };
+	IrNecDecoder nec_decoder
+	;
 	/*
-	for (uint16_t i = 0; i < sizeof data; i++) {
-		int d = (timing[i] + 50) / 575;
-		if (d != data[i]) {
-			printf("%i is wrong", i);
-		} else {
-			printf(".");
-		}
-	}
-*/
-	for (uint16_t i = 0; i < sizeof data; i++) {
-		IrNecDecoder::Data* result = ir.decode(timing[i]);
+	 for (uint16_t i = 0; i < sizeof data; i++) {
+	 int d = (timing[i] + 50) / 575;
+	 if (d != data[i]) {
+	 printf("%i is wrong", i);
+	 } else {
+	 printf(".");
+	 }
+	 }
+	 */
+	for (uint16_t i = 0; i < sizeof(nec_t)/sizeof(nec_t[0]); i++) {
+		IrNecDecoder::Data* result = nec_decoder.decode(nec_t[i]);
 		if (result != NULL) {
-			printf("address:%i,cmd:%i",(int)result->getAddress(),(int)result->getCmd());
+			printf("address:%i,cmd:%i\n", (int) result->getAddress(),
+					(int) result->getCmd());
 		}
 
 	}
+	TadDecoder tad_decoder;
+	for (uint16_t i = 0; i < sizeof(tad_t)/sizeof(tad_t[0]); i++) {
+		if(uint8_t* data = tad_decoder.decode(tad_t[i])){
+			printf("data %u %u %u %u", data[0], data[1], data[2], data[3]);
+		}
+	}
+
 }

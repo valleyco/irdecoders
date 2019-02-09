@@ -24,7 +24,7 @@ public:
 			state(START_WAIT), pos(0), mask(0) {
 	}
 	;
-	void decode(int length) {
+	uint8_t* decode(int length) {
 		uint8_t span = (length + pulse_unit / 2) / pulse_unit;
 		switch (state) {
 		case START_WAIT:
@@ -41,6 +41,7 @@ public:
 			if (span == 8) {
 				mask = 1;
 				pos = 0;
+				data[0] = 0;
 				state = DATA_HIGH;
 			} else {
 				state = START_WAIT;
@@ -67,19 +68,21 @@ public:
 				}
 				pos++;
 				mask = 1;
+				data[pos] = 0;
 			} else {
 				mask <<= 1;
 			}
 			state = DATA_HIGH;
 			break;
 		case END_HIGH:
-			if (span == 1) {
-				; // WE HAVE DATA HERE
-			}
 			state = START_WAIT;
+			if (span == 1) {
+				return data;
+			}
 			break;
 
 		}
+		return NULL;
 	}
 
 };

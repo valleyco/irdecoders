@@ -10,8 +10,8 @@
 #include <stdint.h>
 
 class TadDecoder {
-	const uint16_t pulse_unit = 638;
-	const uint16_t packet_length = 8;
+	const static uint16_t pulse_unit = 638;
+	const static uint16_t packet_length = 8;
 	enum State {
 		START_WAIT, START_HIGH, START_LOW, DATA_HIGH, DATA_LOW, END_HIGH
 	} state;
@@ -25,7 +25,7 @@ public:
 			state(START_WAIT), pos(0), mask(0), expected(0) {
 
 	}
-	void decode(int length) {
+	uint8_t* decode(int length) {
 		uint8_t span = (length + pulse_unit / 2) / pulse_unit;
 		switch (state) {
 		case START_WAIT:
@@ -42,6 +42,7 @@ public:
 			if (span == 7) {
 				mask = 1;
 				pos = 0;
+				data[0] = 0;
 				state = DATA_HIGH;
 			} else {
 				state = START_WAIT;
@@ -72,21 +73,21 @@ public:
 					state = END_HIGH;
 					break;
 				}
+				data[pos] = 0;
 				mask = 1;
 			} else {
 				mask <<= 1;
 			}
 			state = DATA_HIGH;
-
-		}
-		break;
+			break;
 		case END_HIGH:
-		if (span == 1) {
-			; // WE HAVE DATA HERE
+			state = START_WAIT;
+			if (span == 3) {
+				return data;
+			}
+			break;
 		}
-		state = START_WAIT;
-		break;
-
+		return NULL;
 	}
 };
 
