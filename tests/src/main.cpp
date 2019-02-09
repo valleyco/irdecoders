@@ -57,7 +57,7 @@ int main() {
 	TadDecoder tad_decoder;
 	for (uint16_t i = 0; i < sizeof(tad_t)/sizeof(tad_t[0]); i++) {
 		if(uint8_t* data = tad_decoder.decode(tad_t[i])){
-			printf("data %u %u %u %u", data[0], data[1], data[2], data[3]);
+			printf("data %u %u %u %u %u %u %u %u", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 		}
 	}
 
