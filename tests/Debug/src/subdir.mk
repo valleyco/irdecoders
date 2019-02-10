@@ -4,15 +4,12 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../src/IrNecDecoder.cpp \
 ../src/main.cpp 
 
 OBJS += \
-./src/IrNecDecoder.o \
 ./src/main.o 
 
 CPP_DEPS += \
-./src/IrNecDecoder.d \
 ./src/main.d 
 
 

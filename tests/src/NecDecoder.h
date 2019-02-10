@@ -12,7 +12,7 @@
 
 class NecDecoder {
 private:
-	const uint16_t pulse_unit = 575;
+	const static uint16_t pulse_unit = 575;
 	enum State {
 		START_WAIT, START_HIGH, START_LOW, DATA_HIGH, DATA_LOW, END_HIGH
 	} state;

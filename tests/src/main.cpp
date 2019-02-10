@@ -5,18 +5,17 @@
  *      Author: david
  */
 #include <stdio.h>
-#include "IrNecDecoder.h"
+#include <stdint.h>
 #include "NecDecoder.h"
 #include "TadDecoder.h"
 
-int main() {
 #if 0
 	uint8_t data[] = { 16, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 1, 1, 3, 1, 1,
 			1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 3, 1, 1, 1, 3, 1, 3, 1, 3, 1, 1, 1,
 			3, 1 };
 #endif
-	int nec_t[] = { 9380, 4660, 560, 620, 580, 600, 580, 600, 560, 580, 600,
+	int nec_t[] = {54308, 9380, 4660, 560, 620, 580, 600, 580, 600, 560, 580, 600,
 			580, 580, 600, 580, 580, 580, 600, 580, 1740, 560, 1740, 580, 1740,
 			580, 1740, 560, 1720, 600, 1740, 580, 1740, 560, 1760, 540, 1760,
 			580, 580, 580, 1740, 580, 600, 560, 600, 540, 620, 580, 1720, 600,
@@ -34,7 +33,9 @@ int main() {
 			560, 1860, 580, 1820, 660, 1800, 600, 1820, 1780, 680, 580, 1840,
 			1800, 600, 1840, 600, 1800, 640, 660, 1780, 600, 1820, 600, 1860,
 			1680 };
-	IrNecDecoder nec_decoder
+int main() {
+
+	NecDecoder nec_decoder
 	;
 	/*
 	 for (uint16_t i = 0; i < sizeof data; i++) {
@@ -46,18 +47,25 @@ int main() {
 	 }
 	 }
 	 */
+	uint8_t* data;
 	for (uint16_t i = 0; i < sizeof(nec_t)/sizeof(nec_t[0]); i++) {
-		IrNecDecoder::Data* result = nec_decoder.decode(nec_t[i]);
-		if (result != NULL) {
-			printf("address:%i,cmd:%i\n", (int) result->getAddress(),
-					(int) result->getCmd());
+		if((data = nec_decoder.decode(nec_t[i])) != NULL ){
+			printf("Nec data: ");
+			for(int i=0;i< 4;i++){
+				printf("%u ",data[i]);
+			}
+			printf("\n");
 		}
 
-	}
+	};
 	TadDecoder tad_decoder;
 	for (uint16_t i = 0; i < sizeof(tad_t)/sizeof(tad_t[0]); i++) {
-		if(uint8_t* data = tad_decoder.decode(tad_t[i])){
-			printf("data %u %u %u %u %u %u %u %u", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+		if((data = tad_decoder.decode(tad_t[i])) != NULL){
+			printf("Tadiran data: ");
+			for(int i=0;i< 8;i++){
+				printf("%u ",data[i]);
+			}
+			printf("\n");
 		}
 	}
 
